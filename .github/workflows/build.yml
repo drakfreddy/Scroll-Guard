@@ -14,8 +14,17 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: 8.9
-      - run: gradle assembleDebug --no-daemon
+      - name: Build
+        run: |
+          rm -rf proj && mkdir proj
+          unzip -q ScrollGuard.zip -d proj
+          cd proj/ScrollGuard
+          gradle assembleDebug --no-daemon
+      - name: Collect APK
+        run: |
+          mkdir -p out
+          cp proj/ScrollGuard/app/build/outputs/apk/debug/app-debug.apk out/
       - uses: actions/upload-artifact@v4
         with:
           name: ScrollGuard-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: out/app-debug.apk
